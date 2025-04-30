@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Telegram Chat Export</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Telegram Chat Archive</h1>
+  <ul>
+    <li><a href="index.html">Main Chat</a></li>
+    <li><a href="chat1.html">Chat 1</a></li>
+    <li><a href="chat2.html">Chat 2</a></li>
+  </ul>
+  <script>
+    const form = document.getElementById("searchForm");
+    const input = document.getElementById("searchInput");
+    const searchNav = document.getElementById("searchNav");
+    const searchCount = document.getElementById("searchCount");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+  
+    let matches = [];        // Stores matched elements
+    let currentIndex = -1;   // Tracks which match is active
+  
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+  
+      const query = input.value.trim().toLowerCase();
+      const allMessages = document.querySelectorAll(".text");
+  
+      // Reset
+      matches.forEach(msg => msg.classList.remove("search-active"));
+      matches = [];
+      currentIndex = -1;
+  
+      // Search and highlight matches
+      allMessages.forEach(msg => {
+        const content = msg.textContent.toLowerCase();
+  
+        if (query && content.includes(query)) {
+          msg.style.backgroundColor = "#ffff00"; // Yellow for match
+          matches.push(msg);
+        } else {
+          msg.style.backgroundColor = ""; // Clear old highlights
+        }
+      });
+  
+      // Show search nav only if there are matches
+      if (matches.length > 0) {
+        currentIndex = 0;
+        scrollToMatch(currentIndex);
+        searchNav.style.display = "flex";
+      } else {
+        searchNav.style.display = "none";
+      }
+  
+      updateCounter();
+    });
+  
+    // Scroll and style the current match
+    function scrollToMatch(index) {
+      matches.forEach((msg, i) => {
+        msg.classList.toggle("search-active", i === index); // Add orange border to active one
+      });
+  
+      if (matches[index]) {
+        matches[index].scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  
+    function updateCounter() {
+      searchCount.textContent = matches.length > 0
+        ? `${currentIndex + 1} of ${matches.length}`
+        : `0 of 0`;
+    }
+  
+    // Button events
+    nextBtn.addEventListener("click", () => {
+      if (matches.length > 0) {
+        currentIndex = (currentIndex + 1) % matches.length;
+        scrollToMatch(currentIndex);
+        updateCounter();
+      }
+    });
+  
+    prevBtn.addEventListener("click", () => {
+      if (matches.length > 0) {
+        currentIndex = (currentIndex - 1 + matches.length) % matches.length;
+        scrollToMatch(currentIndex);
+        updateCounter();
+      }
+    });
+  </script>
+  
+
+ </body>
+</html>
